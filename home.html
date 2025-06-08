@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Caption Generator with Audio</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e0b0ff, #d8bfd8); /* Pastel purple background */
+    color: #333; /* Dark text color */
+}
+
+.menu-bar {
+            background-color: #f0e6ef; /* Light pastel purple menu bar */
+            color: #4a235a;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-bar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .menu-bar li {
+            padding: 10px 20px;
+        }
+
+        .menu-bar li a {
+            color: #4a235a;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .menu-item:hover a {
+            color: #9370db; /* Slight hover effect on links */
+        }
+.content-area {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.card {
+    background-color: #f5f0f5; /* Very light purple card */
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+}
+
+.image-preview {
+    width: 100%;
+    height: 250px;
+    background-color: #e6d0f0; /* Lighter pastel purple preview */
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.upload-btn {
+    background-color: #9370db; /* Medium pastel purple upload button */
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.upload-btn:hover {
+    background-color: #8060c0; /* Slightly darker purple on hover */
+}
+
+.btn {
+    background-color: #b19cd9; /* Light pastel lavender button */
+    color: #333; /* Dark text on button */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background-color: #a08cc8; /* Slightly darker lavender on hover */
+}
+
+.audio-btn {
+    background-color: #d0a8e2; /* Light pastel orchid button */
+    color: #333; /* Dark text on audio button */
+}
+
+.audio-btn:hover {
+    background-color: #c098d2; /* Slightly darker orchid on hover */
+}
+
+.caption-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.footer {
+    background-color: #f0e6ef; /* Light pastel purple footer */
+    color: #4a235a; /* Darker purple for footer text */
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+}
+
+.menu-left, .menu-center, .menu-right {
+    display: flex;
+    align-items: center;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+}
+
+.profile-picture {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.auth-buttons {
+    display: flex;
+}
+
+.auth-btn {
+    background-color: #9370db; /* Medium pastel purple auth button */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.auth-btn:hover {
+    background-color: #8060c0; /* Slightly darker purple on hover */
+}
+
+    </style>
+</head>
+<body>
+    <nav class="menu-bar" aria-label="Main Navigation">
+        <div class="menu-left">
+            <span class="website-name">VISIBLE</span>
+        </div>
+        <ul class="menu-center">
+            <li class="menu-item"><a href="#">Home</a></li>
+            <li class="menu-item"><a href="{{ url_for('static', filename='about.html') }}">About Us</a></li>
+            <li class="menu-item"><a href="{{ url_for('static', filename='contact.html') }}">Contact Us</a></li>
+
+        </ul>
+        <div class="menu-right">
+            <div class="profile-section">
+                  <img src="\static\logo.png" alt="Profile Picture" class="profile-picture">
+                
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-area">
+        <div class="container">
+            <div class="card">
+                <div id="image-preview" class="image-preview"></div>
+                <form id="upload-form" enctype="multipart/form-data">
+                    <input type="file" accept="image/*" name="image" id="imageUpload" hidden />
+                    <label for="imageUpload" class="upload-btn">
+                        <span>Upload Image</span>
+                    </label>
+                    <p id="caption" class="caption-text"></p>
+                    <button type="submit" id="generate-btn" class="btn">Generate Caption</button>
+                    <button id="play-audio-btn" class="btn audio-btn" disabled>Play Audio</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <p>Developed by Sheryl</p>
+    </footer>
+    <script>
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('image-preview').style.backgroundImage = `url(${e.target.result})`;
+                    document.getElementById('image-preview').style.backgroundSize = 'cover';
+                    document.getElementById('image-preview').style.backgroundRepeat = 'no-repeat';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('image-preview').style.backgroundImage = '';
+            }
+        });
+
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/generate_caption', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('caption').textContent = data.caption;
+                document.getElementById('play-audio-btn').disabled = false;
+
+                fetch('/generate_audio', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({text: data.caption})
+                })
+                .then(() => {
+                    const playAudioBtn = document.getElementById('play-audio-btn');
+
+                    // Remove any existing event listeners by cloning the button.
+                    const newPlayAudioBtn = playAudioBtn.cloneNode(true);
+                    playAudioBtn.parentNode.replaceChild(newPlayAudioBtn, playAudioBtn);
+
+                    // Add a new event listener to play the new audio.
+                    newPlayAudioBtn.addEventListener('click', function() {
+                        fetch('/get_audio')
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const audioUrl = URL.createObjectURL(blob);
+                            const audio = new Audio(audioUrl);
+                            audio.play();
+                        })
+                        .catch(audioFetchError => {
+                            console.error('Error fetching audio:', audioFetchError);
+                        });
+                    });
+                })
+                .catch(audioError => {
+                    console.error('Error generating audio:', audioError);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
